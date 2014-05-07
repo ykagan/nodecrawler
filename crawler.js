@@ -3,9 +3,18 @@ var request = require('request'),
 	async = require('async'),
 	format = require('util').format;
 
-process.setMaxListeners(0);
 
+//default domain to crawl
 var domain = "http://joingrouper.com";
+if(process.argv.length < 3)
+{
+	console.log("Please provide a domain name");
+	return;
+}
+else
+{
+	domain = process.argv[2];
+}
 //datastructure to hold the sitemap
 var root = {
 	linkText: "Grouper",
@@ -49,7 +58,6 @@ var getLinks = function(callback){
 	var links = linkQueue.slice(numVisited);
 	return async.eachLimit(links, 10, function(link, callback){
 		var link = link; //make sure link is available in closure;
-		link.childLinks = [];
 		//console.log("request %s", domain + link.linkUrl);
 		request(domain + link.linkUrl, function(err, response, body){
 			if(err) {
@@ -67,6 +75,8 @@ var getLinks = function(callback){
 				};
 				
 				if(urlIsValid(childlink.linkUrl)){
+					if(!link.childlinks)
+						link.childlinks = [];
 					link.childLinks.push(childlink);
 					linkQueue.push(childlink);
 					visitedUrls[childlink.linkUrl] = link;
