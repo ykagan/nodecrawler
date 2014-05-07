@@ -1,0 +1,30 @@
+{
+  "name": "nodecrawler",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ykagan/nodecrawler.git"
+  },
+  "keywords": [
+    "Node.js",
+    "Web",
+    "Crawler"
+  ],
+  "author": "Yuriy Kagan",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/ykagan/nodecrawler/issues"
+  },
+  "devDependencies": {
+    "express": "~4.1.1",
+    "cheerio": "~0.15.0",
+    "require": "~0.5.0",
+    "async": "~0.8.0",
+    "util": "~0.10.3"
+  }
+}
