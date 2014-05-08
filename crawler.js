@@ -3,37 +3,17 @@ var request = require('request'),
 	async = require('async'),
 	format = require('util').format;
 
-
-//default domain to crawl
-var domain = "http://joingrouper.com";
-if(process.argv.length < 3)
-{
-	console.error("Please provide a domain name");
-	return;
-}
-else
-{
-	domain = process.argv[2];
-}
+var domain = "";
 //datastructure to hold the sitemap
-var root = {
-	linkText: "Index page for " + domain,
-	linkUrl: ""
-};
+var root = { };
 //queue of links to visit
-var linkQueue = [root];
+var linkQueue = [];
 //number of links visited
 var numVisited = 0;
 //associative array of links that have been visited
 //used to ensure same link isn't visited twice
 var visitedUrls = {};
-
-//number of levels to go in site hierarchy 
-var maxLevel = 4;
-if(process.argv.length > 3 && parseInt(process.argv[3]) > 0)
-{
-	maxLevel = process.argv[3];
-}
+//current depth level
 var curLevel = 0;
 
 var isRelativeUrl = function(url){
@@ -106,15 +86,29 @@ var getLinks = function(callback){
 	});
 };
 
-async.doWhilst(
-	function(callback){
-		getLinks(callback);
-		curLevel++;
-	},
-	function(){
-		return linkQueue.length > numVisited  && curLevel < maxLevel;
-	},
-	function(err){
-		console.log(JSON.stringify(root, null, 4));
-	}
-);
+var crawl = function(domainToCrawl, maxLevel){
+	//queue of links to visit
+	domain = domainToCrawl;
+	root = {
+		linkText: "Index page for " + domain,
+		linkUrl: ""
+	};
+	linkQueue.push(root);
+
+	async.doWhilst(
+		function(callback){
+			getLinks(callback);
+			curLevel++;
+		},
+		function(){
+			return linkQueue.length > numVisited  && curLevel < maxLevel;
+		},
+		function(err){
+			console.log(JSON.stringify(root, null, 4));
+		}
+	);
+}
+
+module.exports = {
+	crawl: crawl
+};

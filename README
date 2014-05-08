@@ -1,4 +1,4 @@
-Node.js Crawler and Site Map generator
+Node.js Site Map generator
 ===================
 
 This console app crawls a single domain to generate a sitemap for this domain.
@@ -21,6 +21,7 @@ The sitemap is returned as a JSON object in this format:
 	]}
 }
 
+For a sample please refer to sampleresults.json
 
 Installation
 -----------
@@ -28,8 +29,8 @@ Installation
 
 Run
 -------------
-	node crawler [domain] (depth)
-	node crawler https://joingrouper.com 4
+	node crawl [domain] (depth)
+	node crawl https://joingrouper.com 4
 
 The depth is optional and defaults to 4
 
@@ -42,4 +43,8 @@ We use node *async* to execute HTTP requests against the target domain (up to a 
 
 Requests are handled through a queue one depth level at a time, 10 requests at a time.
 
+Notes
+-------------------
+The application does not attempt to find assets loaded by Javascript or inside CSS files (including CSS images). It only identifies assets referenced in the HTML.
 
+To keep the logic simple, we remote all hash tags and query parameters from links and treat these as 1 link. In the future this can be an optional setting.
