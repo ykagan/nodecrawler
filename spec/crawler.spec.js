@@ -46,11 +46,11 @@ describe("crawler", function(){
 		});
 	});
 
-	it("will read assets crawl duplicate links", function(done){
+	iit("will record static assets in a page", function(done){
 		crawler.crawl("http://mytargetdomain.com", 4, function(root){
 			expect(root.childlinks[0].childlinks[0].linkText).toBe("second link");
 			expect(root.childlinks[0].assets.length).toBe(1);
-			expect(root.childlinks[0].assets[0]).toBe("image.jpg");
+			 expect(root.childlinks[0].childlinks[0].assets[0]).toBe("image.jpg");
 			done();
 		});
 	});
