@@ -32,7 +32,14 @@ Run
 	node crawl [domain] (depth)
 	node crawl https://joingrouper.com 4
 
-The depth is optional and defaults to 4
+The depth is optional and defaults to 4The depth is optional and defaults to 4
+
+Test
+---------------
+	jasmine-node spec
+
+Note: run npm install jasmine-node -g first 
+
 
 Implementation Details
 ---------------

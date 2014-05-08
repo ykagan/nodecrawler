@@ -21,7 +21,8 @@
     "url": "https://github.com/ykagan/nodecrawler/issues"
   },
   "devDependencies": {
-    "jasmine-node": "~1.14.3"
+    "jasmine-node": "~1.14.3",
+    "nock": "~0.29.0"
   },
   "dependencies": {
     "cheerio": "~0.15.0",

@@ -86,13 +86,18 @@ var getLinks = function(callback){
 	});
 };
 
-var crawl = function(domainToCrawl, maxLevel){
+var crawl = function(domainToCrawl, maxLevel, callback){
 	//queue of links to visit
+	
 	domain = domainToCrawl;
 	root = {
 		linkText: "Index page for " + domain,
 		linkUrl: ""
 	};
+	linkQueue = [];
+	visitedUrls = {};
+	curLevel = 0;
+	numVisited = 0;
 	linkQueue.push(root);
 
 	async.doWhilst(
@@ -105,6 +110,8 @@ var crawl = function(domainToCrawl, maxLevel){
 		},
 		function(err){
 			console.log(JSON.stringify(root, null, 4));
+			if(callback)
+				callback(root);
 		}
 	);
 }
