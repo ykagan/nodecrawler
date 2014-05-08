@@ -8,7 +8,7 @@ var request = require('request'),
 var domain = "http://joingrouper.com";
 if(process.argv.length < 3)
 {
-	console.log("Please provide a domain name");
+	console.error("Please provide a domain name");
 	return;
 }
 else
@@ -17,7 +17,7 @@ else
 }
 //datastructure to hold the sitemap
 var root = {
-	linkText: "Grouper",
+	linkText: "Index page for " + domain,
 	linkUrl: ""
 };
 //queue of links to visit
@@ -28,8 +28,12 @@ var numVisited = 0;
 //used to ensure same link isn't visited twice
 var visitedUrls = {};
 
-//number of levels to go
+//number of levels to go in site hierarchy 
 var maxLevel = 4;
+if(process.argv.length > 3 && parseInt(process.argv[3]) > 0)
+{
+	maxLevel = process.argv[3];
+}
 var curLevel = 0;
 
 var isRelativeUrl = function(url){
@@ -37,7 +41,7 @@ var isRelativeUrl = function(url){
 	return !r.test(url);
 }
 
-//removes hashes and query parameters from url
+//removes hashes and query parameters from url - attempt to ensure unique URLs
 var trimUrl = function(url) {
 	if(url)
 		url = url.split("#").pop();
@@ -55,19 +59,21 @@ var urlIsValid = function(url){
 }
 
 var getLinks = function(callback){
+	//get the next set of links to visit
 	var links = linkQueue.slice(numVisited);
 	return async.eachLimit(links, 10, function(link, callback){
 		var link = link; //make sure link is available in closure;
-		//console.log("request %s", domain + link.linkUrl);
+		console.warn("%s: Requesing %s", numVisited, domain + link.linkUrl);
 		request(domain + link.linkUrl, function(err, response, body){
 			if(err) {
 				//throw err;
-				console.log('request failed: %s', err);
+				console.error('request failed: %s', err);
 				return;
 			}
 			numVisited++;
 			
 			var $ = cheerio.load(body);
+			//parse and process child links
 			$("a").each(function(){
 				var childlink = {
 					linkText: $(this).text().trim(),
@@ -77,11 +83,20 @@ var getLinks = function(callback){
 				if(urlIsValid(childlink.linkUrl)){
 					if(!link.childlinks)
 						link.childlinks = [];
-					link.childLinks.push(childlink);
+					link.childlinks.push(childlink);
 					linkQueue.push(childlink);
 					visitedUrls[childlink.linkUrl] = link;
 				}
-				//console.log("\"%s\": %s", $(this).text(), $(this).attr('href'));
+			});
+			//parse asset references
+			$("img, link, script").each(function(){
+				//console.log('asset found %s', $(this).html());
+				if($(this).attr("src")){
+					if(!link.assets)
+						link.assets = [];
+					link.assets.push($(this).attr("src"));
+
+				}
 			});
 			callback();
 		});

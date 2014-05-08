@@ -1,0 +1,45 @@
+Node.js Crawler and Site Map generator
+===================
+
+This console app crawls a single domain to generate a sitemap for this domain.
+
+The sitemap is returned as a JSON object in this format:
+
+{
+	linkText: "Text of the anchor tag",
+	linkUrl: "/this/url",
+	assets:[
+		'/assets/home.jpg',
+		...
+	],
+	childLinks:{[
+		{
+			linkText:'...',
+			linkUrl: '...'
+		}
+		....
+	]}
+}
+
+
+Installation
+-----------
+	npm install
+
+Run
+-------------
+	node crawler [domain] (depth)
+	node crawler https://joingrouper.com 4
+
+The depth is optional and defaults to 4
+
+Implementation Details
+---------------
+
+We use node *async* to execute HTTP requests against the target domain (up to a maximum if 10 requests at a time to avoid DDOSing the web server).
+
+*cheerio* handles parsing the results and extracting links. This is much more performant than a full DOM implementation like jsdom.
+
+Requests are handled through a queue one depth level at a time, 10 requests at a time.
+
+
